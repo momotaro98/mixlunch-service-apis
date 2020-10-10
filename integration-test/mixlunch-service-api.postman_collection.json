@@ -1,0 +1,1302 @@
+{
+	"info": {
+		"_postman_id": "a4169599-bf72-444c-9b50-1a226cd2b76d",
+		"name": "mixlunch-service-api",
+		"description": "Mixlunch service-api REST API collection\nLink: https://github.com/momotaro98/mixlunch-service-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cba36ea1-68dd-4729-9f31-62a48c423498",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{heathcheck_url}}",
+					"host": [
+						"{{heathcheck_url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "userschedule POST Add",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "37040d3c-05cc-4c7f-afae-f7381889e655",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var userId = pm.environment.get(\"userId\");",
+							"pm.test(\"UserID is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.user_id).to.eql(userId);",
+							"});",
+							"",
+							"pm.test(\"From is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_userschedule_added_from\");",
+							"    pm.expect(jsonData.user_schedules[0].from_date_time).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"To is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_userschedule_added_to\");",
+							"    pm.expect(jsonData.user_schedules[0].to_date_time).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"Latitude is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_latitude\");",
+							"    pm.expect(String(jsonData.user_schedules[0].location.latitude)).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"Longitude is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_longitude\");",
+							"    pm.expect(String(jsonData.user_schedules[0].location.longitude)).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"Check if tags contains all provided keys\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.user_schedules[0].tags[0]).to.have.all.keys('category', 'tags');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from_date_time\": \"{{test_userschedule_added_from}}\",\n    \"to_date_time\": \"{{test_userschedule_added_to}}\",\n    \"tag_ids\": [\n        2,\n        4\n    ],\n    \"location\": {\n        \"latitude\": {{test_latitude}},\n        \"longitude\": {{test_longitude}}\n    }\n}"
+				},
+				"url": {
+					"raw": "{{serviceapi_userschedule_baseurl}}{{userId}}/",
+					"host": [
+						"{{serviceapi_userschedule_baseurl}}{{userId}}"
+					],
+					"path": [
+						""
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "userschedule Get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cba36ea1-68dd-4729-9f31-62a48c423498",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var userId = pm.environment.get(\"userId\");",
+							"pm.test(\"UserID is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.user_id).to.eql(userId);",
+							"});",
+							"",
+							"pm.test(\"From is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_userschedule_added_from\");",
+							"    pm.expect(jsonData.user_schedules[0].from_date_time).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"To is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_userschedule_added_to\");",
+							"    pm.expect(jsonData.user_schedules[0].to_date_time).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"Latitude is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_latitude\");",
+							"    pm.expect(String(jsonData.user_schedules[0].location.latitude)).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"Longitude is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_longitude\");",
+							"    pm.expect(String(jsonData.user_schedules[0].location.longitude)).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"Check if tags contains all provided keys\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.user_schedules[0].tags[0]).to.have.all.keys('category', 'tags');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serviceapi_userschedule_baseurl}}{{userId}}/{{test_userschedule_added_from}}/{{test_userschedule_added_to}}",
+					"host": [
+						"{{serviceapi_userschedule_baseurl}}{{userId}}"
+					],
+					"path": [
+						"{{test_userschedule_added_from}}",
+						"{{test_userschedule_added_to}}"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "userschedule Get some schedules",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cba36ea1-68dd-4729-9f31-62a48c423498",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var userId = pm.environment.get(\"userId\");",
+							"pm.test(\"UserID is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.user_id).to.eql(userId);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serviceapi_userschedule_baseurl}}{{userId}}/2011-04-02T12:00:00Z/2020-04-02T13:30:00Z",
+					"host": [
+						"{{serviceapi_userschedule_baseurl}}{{userId}}"
+					],
+					"path": [
+						"2011-04-02T12:00:00Z",
+						"2020-04-02T13:30:00Z"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "userschedule POST Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e6e34211-2f42-47ca-a739-8191057fa482",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var userId = pm.environment.get(\"userId\");",
+							"pm.test(\"UserID is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.user_id).to.eql(userId);",
+							"});",
+							"",
+							"pm.test(\"From is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_userschedule_updated_from\");",
+							"    pm.expect(jsonData.user_schedules[0].from_date_time).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"To is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_userschedule_updated_to\");",
+							"    pm.expect(jsonData.user_schedules[0].to_date_time).to.eql(expected);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Latitude is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_updated_latitude\");",
+							"    pm.expect(String(jsonData.user_schedules[0].location.latitude)).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"Longitude is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_updated_longitude\");",
+							"    pm.expect(String(jsonData.user_schedules[0].location.longitude)).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"Tags is empty\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.user_schedules[0].tags).to.be.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from_date_time\": \"{{test_userschedule_updated_from}}\",\n    \"to_date_time\": \"{{test_userschedule_updated_to}}\",\n    \"tag_ids\": [],\n    \"location\": {\n        \"latitude\": {{test_updated_latitude}},\n        \"longitude\": {{test_updated_longitude}}\n    }\n}"
+				},
+				"url": {
+					"raw": "{{serviceapi_userschedule_baseurl}}update/{{userId}}/",
+					"host": [
+						"{{serviceapi_userschedule_baseurl}}update"
+					],
+					"path": [
+						"{{userId}}",
+						""
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "party GET",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cba36ea1-68dd-4729-9f31-62a48c423498",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check if parties contains all provided keys\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.parties[0]).to.have.all.keys(",
+							"        'party_id',",
+							"        'start_from',",
+							"        'end_to',",
+							"        'chat_room_id',",
+							"        'members',",
+							"        'tags',",
+							"    );",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serviceapi_party_baseurl}}{{userId}}/2018-11-01T00:00:00Z/2018-11-02T23:59:59Z",
+					"host": [
+						"{{serviceapi_party_baseurl}}{{userId}}"
+					],
+					"path": [
+						"2018-11-01T00:00:00Z",
+						"2018-11-02T23:59:59Z"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "userschedule POST Delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "20b1fca4-0a7e-4d0d-a7a5-e83ac0a20738",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var userId = pm.environment.get(\"userId\");",
+							"pm.test(\"UserID is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.user_id).to.eql(userId);",
+							"});",
+							"",
+							"pm.test(\"From is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_userschedule_updated_from\");",
+							"    pm.expect(jsonData.user_schedules[0].from_date_time).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"To is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_userschedule_updated_to\");",
+							"    pm.expect(jsonData.user_schedules[0].to_date_time).to.eql(expected);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Latitude is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_updated_latitude\");",
+							"    pm.expect(String(jsonData.user_schedules[0].location.latitude)).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"Longitude is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_updated_longitude\");",
+							"    pm.expect(String(jsonData.user_schedules[0].location.longitude)).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"Tags is empty\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.user_schedules[0].tags).to.be.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"date\": \"2011-04-02T00:00:00Z\"\n}"
+				},
+				"url": {
+					"raw": "{{serviceapi_userschedule_baseurl}}delete/{{userId}}/",
+					"host": [
+						"{{serviceapi_userschedule_baseurl}}delete"
+					],
+					"path": [
+						"{{userId}}",
+						""
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "tag GET",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cba36ea1-68dd-4729-9f31-62a48c423498",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check if object contains all provided keys\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0]).to.have.all.keys('category', 'tags');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serviceapi_tag_baseurl}}/1",
+					"host": [
+						"{{serviceapi_tag_baseurl}}"
+					],
+					"path": [
+						"1"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "user POST Register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "37040d3c-05cc-4c7f-afae-f7381889e655",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user_id\": \"{{test_userid}}\",\n    \"name\": \"{{test_user_name}}\",\n    \"email\": \"{{test_user_email}}\",\n    \"nick_name\": \"Yappy\",\n    \"sex\": \"1\",\n    \"birthday\": \"{{test_user_birthday}}\",\n    \"photo_url\": \"https://s3.aws.com/bucket-id/xxx\",\n    \"location\": {\n        \"latitude\": {{test_latitude}},\n        \"longitude\": {{test_longitude}}\n    },\n    \"position_id\": 1,\n    \"academic_background\": \"{{test_user_academic_background}}\",\n    \"company\": \"{{test_user_company}}\",\n    \"self_introduction\": \"あいうえおかきくけこあいうえおかきくけこあいうえおかきくけこ\",\n    \"languages\": [\n        \"{{test_user_lang1}}\",\n        \"{{test_user_lang2}}\"\n    ],\n    \"occupation_ids\": [\n        2,\n        3\n    ],\n    \"interest_tag_ids\": [\n        1,\n        2,\n        3\n    ],\n    \"skill_tag_ids\": [\n        8,\n        9,\n        10\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{serviceapi_user_baseurl}}register",
+					"host": [
+						"{{serviceapi_user_baseurl}}register"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "user POST Register Again for Test",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "def99849-c037-4e60-9f04-5a893087080d",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Assert error response\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.code).to.eql(301);",
+							"    pm.expect(jsonData.message).to.eql(\"The user is already in DB. User ID: ymd20200506ymd\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user_id\": \"{{test_userid}}\",\n    \"name\": \"{{test_user_name}}\",\n    \"email\": \"{{test_user_email}}\",\n    \"nick_name\": \"Yappy\",\n    \"sex\": \"1\",\n    \"birthday\": \"{{test_user_birthday}}\",\n    \"photo_url\": \"https://s3.aws.com/bucket-id/xxx\",\n    \"location\": {\n        \"latitude\": {{test_latitude}},\n        \"longitude\": {{test_longitude}}\n    },\n    \"position_id\": 1,\n    \"academic_background\": \"{{test_user_academic_background}}\",\n    \"company\": \"{{test_user_company}}\",\n    \"self_introduction\": \"あいうえおかきくけこあいうえおかきくけこあいうえおかきくけこ\",\n    \"languages\": [\n        \"{{test_user_lang1}}\",\n        \"{{test_user_lang2}}\"\n    ],\n    \"occupation_ids\": [\n        2,\n        3\n    ],\n    \"interest_tag_ids\": [\n        1,\n        2,\n        3\n    ],\n    \"skill_tag_ids\": [\n        8,\n        9,\n        10\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{serviceapi_user_baseurl}}register",
+					"host": [
+						"{{serviceapi_user_baseurl}}register"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "user GET",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cba36ea1-68dd-4729-9f31-62a48c423498",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check if object contains all provided keys\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.all.keys(",
+							"        'user_id',",
+							"        'name',",
+							"        'email',",
+							"        'nick_name',",
+							"        'sex',",
+							"        'birthday',",
+							"        'photo_url',",
+							"        'location',",
+							"        'position',",
+							"        'academic_background',",
+							"        'company',",
+							"        'self_introduction',",
+							"        'languages',",
+							"        'occupation_ids',",
+							"        'interest_tags',",
+							"        'skill_tags',",
+							"        'blocking_users');",
+							"});",
+							"",
+							"pm.test(\"UserID is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_userid\");",
+							"    pm.expect(jsonData.user_id).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"Name is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_user_name\");",
+							"    pm.expect(jsonData.name).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"email is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_user_email\");",
+							"    pm.expect(jsonData.email).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"email is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_user_email\");",
+							"    pm.expect(jsonData.email).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"Latitude is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_latitude\");",
+							"    pm.expect(String(jsonData.location.latitude)).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"Longitude is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_longitude\");",
+							"    pm.expect(String(jsonData.location.longitude)).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"academic_background is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_user_academic_background\");",
+							"    pm.expect(jsonData.academic_background).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"company is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_user_company\");",
+							"    pm.expect(jsonData.company).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"self_introduction is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = pm.variables.get(\"test_user_self_introduction\");",
+							"    pm.expect(jsonData.self_introduction).to.eql(expected);",
+							"});",
+							"",
+							"pm.test(\"languages is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected1 = pm.variables.get(\"test_user_lang1\");",
+							"    var expected2 = pm.variables.get(\"test_user_lang2\");",
+							"    pm.expect(jsonData.languages).to.have.members([expected1, expected2]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serviceapi_user_baseurl}}{{test_userid}}",
+					"host": [
+						"{{serviceapi_user_baseurl}}{{test_userid}}"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "user Public GET",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cba36ea1-68dd-4729-9f31-62a48c423498",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serviceapi_user_baseurl}}public/{{userId}}",
+					"host": [
+						"{{serviceapi_user_baseurl}}public"
+					],
+					"path": [
+						"{{userId}}"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "party Review Member Done GET NOT yet Done Case",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8bd18e44-d6b9-4aba-92c1-05736eeb6f87",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check if object contains all provided keys\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.all.keys(",
+							"        'is_review_done');",
+							"});",
+							"",
+							"pm.test(\"Fields are correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = false;",
+							"    pm.expect(jsonData.is_review_done).to.eql(expected);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serviceapi_party_baseurl}}review/done/agKZdfhGOQMPQcNuCrR3xyfrrku1",
+					"host": [
+						"{{serviceapi_party_baseurl}}review"
+					],
+					"path": [
+						"done",
+						"agKZdfhGOQMPQcNuCrR3xyfrrku1"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "party POST Review Member",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dda66158-a9a1-49f0-acba-d079d5c84e6a",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"party_id\": 1,\n  \"reviewer\": \"agKZdfhGOQMPQcNuCrR3xyfrrku1\",\n  \"reviewee\": \"xDlXdTXw5eV7jC7ETxX59gUk71J2\",\n  \"score\": 0.1,\n  \"comment\": \"He was terrible. I won't see him forever.\"\n}"
+				},
+				"url": {
+					"raw": "{{serviceapi_party_baseurl}}review/member",
+					"host": [
+						"{{serviceapi_party_baseurl}}review"
+					],
+					"path": [
+						"member"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "party POST Review Member for Duplicate Case",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f092fadf-1131-4808-8374-373c7d38e10c",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Assert error response\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.code).to.eql(201);",
+							"    pm.expect(jsonData.message).to.eql(\"The review is already posted. party_id: 1, reviewer: agKZdfhGOQMPQcNuCrR3xyfrrku1, reviewee: xDlXdTXw5eV7jC7ETxX59gUk71J2\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"party_id\": 1,\n  \"reviewer\": \"agKZdfhGOQMPQcNuCrR3xyfrrku1\",\n  \"reviewee\": \"xDlXdTXw5eV7jC7ETxX59gUk71J2\",\n  \"score\": 0.1,\n  \"comment\": \"He was terrible. I won't see him forever.\"\n}"
+				},
+				"url": {
+					"raw": "{{serviceapi_party_baseurl}}review/member",
+					"host": [
+						"{{serviceapi_party_baseurl}}review"
+					],
+					"path": [
+						"member"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "party POST Review Member for Inconsistency Case",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7d641e12-e8d7-4c1f-9509-8c12429fae7f",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Assert error response\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.code).to.eql(202);",
+							"    pm.expect(jsonData.message).to.eql(\"The review post has incosistency. Check party_id: 1, reviewer: InvalidMemberID, reviewee: xDlXdTXw5eV7jC7ETxX59gUk71J2\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"party_id\": 1,\n  \"reviewer\": \"InvalidMemberID\",\n  \"reviewee\": \"xDlXdTXw5eV7jC7ETxX59gUk71J2\",\n  \"score\": 0.1,\n  \"comment\": \"He was terrible. I won't see him forever.\"\n}"
+				},
+				"url": {
+					"raw": "{{serviceapi_party_baseurl}}review/member",
+					"host": [
+						"{{serviceapi_party_baseurl}}review"
+					],
+					"path": [
+						"member"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "party Review Member Done GET Done Case",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4daa5e5f-1111-470f-a996-24b8ee2daf48",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check if object contains all provided keys\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.all.keys(",
+							"        'is_review_done');",
+							"});",
+							"",
+							"pm.test(\"Fields are correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expected = true;",
+							"    pm.expect(jsonData.is_review_done).to.eql(expected);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serviceapi_party_baseurl}}review/done/agKZdfhGOQMPQcNuCrR3xyfrrku1",
+					"host": [
+						"{{serviceapi_party_baseurl}}review"
+					],
+					"path": [
+						"done",
+						"agKZdfhGOQMPQcNuCrR3xyfrrku1"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "User Block POST",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "79d04486-86c4-42ac-bf3b-3e51a11c4acc",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"blocker\": \"agKZdfhGOQMPQcNuCrR3xyfrrku1\",\n  \"blockee\": \"xDlXdTXw5eV7jC7ETxX59gUk71J2\"\n}"
+				},
+				"url": {
+					"raw": "{{serviceapi_user_baseurl}}block",
+					"host": [
+						"{{serviceapi_user_baseurl}}block"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "User Block Post for Duplicate Case",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3ac13e25-fc43-43d1-b86e-81cb0707e2c5",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Assert error response\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.code).to.eql(302);",
+							"    pm.expect(jsonData.message).to.eql(\"The user blocker pair is already in DB. Blocker User ID: agKZdfhGOQMPQcNuCrR3xyfrrku1, Blockee User ID: xDlXdTXw5eV7jC7ETxX59gUk71J2\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"blocker\": \"agKZdfhGOQMPQcNuCrR3xyfrrku1\",\n  \"blockee\": \"xDlXdTXw5eV7jC7ETxX59gUk71J2\"\n}"
+				},
+				"url": {
+					"raw": "{{serviceapi_user_baseurl}}block",
+					"host": [
+						"{{serviceapi_user_baseurl}}block"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		},
+		{
+			"name": "User Block Post for Inconsistency Case",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e6f61e74-2d2d-4669-81b7-ca29a543b961",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Assert error response\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.code).to.eql(303);",
+							"    pm.expect(jsonData.message).to.eql(\"The user blocker request has inconsistency. Check Blocker User ID: invalidUserID, Blockee User ID: xDlXdTXw5eV7jC7ETxX59gUk71J2\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"blocker\": \"invalidUserID\",\n  \"blockee\": \"xDlXdTXw5eV7jC7ETxX59gUk71J2\"\n}"
+				},
+				"url": {
+					"raw": "{{serviceapi_user_baseurl}}block",
+					"host": [
+						"{{serviceapi_user_baseurl}}block"
+					]
+				},
+				"description": "Bearer Token"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "1bae27ad-2e15-47b1-b0f8-6b91298b8f7b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "9201ccf8-1fa4-4b62-a48e-18d24d4443a2",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d3c76bfd-1fba-492a-9260-76691af73994",
+			"key": "test_userschedule_added_from",
+			"value": "2011-04-02T12:00:00Z"
+		},
+		{
+			"id": "b3f0a5af-3be9-4b96-84a6-c9602d59a9ad",
+			"key": "test_userschedule_added_to",
+			"value": "2011-04-02T13:00:00Z"
+		},
+		{
+			"id": "bc9e0586-bf9d-4ec0-ba69-4e5175d406f4",
+			"key": "test_userschedule_updated_from",
+			"value": "2011-04-02T12:30:00Z"
+		},
+		{
+			"id": "422b7c66-8e99-4959-9377-cc4c3b7063ae",
+			"key": "test_userschedule_updated_to",
+			"value": "2011-04-02T13:30:00Z"
+		},
+		{
+			"id": "8a9bcb56-5e0a-41dc-8922-d627b70ee5c7",
+			"key": "test_latitude",
+			"value": "35.610483"
+		},
+		{
+			"id": "cfbd2497-cd68-4927-9bd2-088ab1331159",
+			"key": "test_longitude",
+			"value": "139.630123"
+		},
+		{
+			"id": "5c2338d6-b15f-4e5c-a790-888ba6ae8340",
+			"key": "test_updated_latitude",
+			"value": "34.610483"
+		},
+		{
+			"id": "a85868b6-058f-442a-8d26-aeb823ec783d",
+			"key": "test_updated_longitude",
+			"value": "138.630123"
+		},
+		{
+			"id": "4d05a150-23bc-4986-a6e9-5904027d70cd",
+			"key": "test_userid",
+			"value": "ymd20200506ymd"
+		},
+		{
+			"id": "a20ea75e-f865-4097-a1ab-211d049e09ab",
+			"key": "test_user_name",
+			"value": "Tanaka Taro"
+		},
+		{
+			"id": "7b074f12-d851-4544-bb55-aee39b27a5d8",
+			"key": "test_user_email",
+			"value": "tanaka@example.com"
+		},
+		{
+			"id": "bac4e01c-ebe0-4bae-b97f-a6e5e3dc6e06",
+			"key": "test_user_birthday",
+			"value": "1995-02-02"
+		},
+		{
+			"id": "6a55f06c-73a2-476a-a4d8-701a598e5f78",
+			"key": "test_user_academic_background",
+			"value": "東京大学法学部"
+		},
+		{
+			"id": "09241a17-515a-41a1-b6f1-dbb7b0719c31",
+			"key": "test_user_company",
+			"value": "株式会社ミックスランチ"
+		},
+		{
+			"id": "b4bad16c-5bf4-484c-ad95-0dd5028f8d70",
+			"key": "test_user_self_introduction",
+			"value": "あいうえおかきくけこあいうえおかきくけこあいうえおかきくけこ"
+		},
+		{
+			"id": "c31bfed0-39fe-433b-94eb-4fa79d31f77a",
+			"key": "test_user_lang1",
+			"value": "en"
+		},
+		{
+			"id": "ebf49960-4d86-4148-9c2b-fa3fbc217430",
+			"key": "test_user_lang2",
+			"value": "ja"
+		}
+	]
+}

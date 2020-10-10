@@ -1,0 +1,62 @@
+#### joe made this: http://goel.io/joe
+
+# Project build
+mixlunch-service-api
+
+serviceAccount/
+aws/
+
+# Mac
+.DS_Store
+
+# VSCode
+/.vscode
+
+# JetBrains
+.idea/
+
+# Common
+*.swp
+
+# Makefile
+/workdir
+
+#### go ####
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+
+# Folders
+_obj
+_test
+
+# Architecture specific extensions/prefixes
+*.[568vq]
+[568vq].out
+
+*.cgo1.go
+*.cgo2.c
+_cgo_defun.c
+_cgo_gotypes.go
+_cgo_export.*
+
+_testmain.go
+
+*.exe
+*.test
+*.prof
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# External packages folder
+# vendor/
+
+build/
+
+# schema view
+schema_view/
+
+# gitkeep
+!.gitkeep

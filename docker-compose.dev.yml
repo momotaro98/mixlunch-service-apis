@@ -1,0 +1,22 @@
+version: '3'
+services:
+  api:
+    networks:
+      - db-net
+      - api-net
+
+  grpc:
+    networks:
+      - db-net
+      - grpc-net
+
+  db:
+    ports:
+      - "3306:3306"
+    networks:
+      - db-net
+
+networks:
+  db-net:
+  api-net:
+  grpc-net:

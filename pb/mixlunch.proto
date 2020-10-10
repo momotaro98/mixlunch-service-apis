@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package pb;
+
+service MixLunch {
+    // A server-to-client streaming RPC.
+    //
+    // Obtains the users information by passing target date
+    rpc GetUsersForMatching(TargetDate) returns (stream UserModelForMatching) {}
+    // A client-to-server streaming RPC.
+    //
+    // Uploads the parties information
+    rpc CreateParties(stream Party) returns (Empty) {}
+    // A server-to-client streaming RPC.
+    //
+    // Obtains the parties information by passing target date
+    rpc GetParties(TargetDate) returns (stream Party) {}
+}
+
+// TargetDate is represented as date format string. i.e. '2019-05-01'
+message TargetDate {
+    string date = 1;
+}
+
+// UserModelForMatching is represented as user model for MixLunch matching program
+message UserModelForMatching {
+    string user_id = 1;
+    string free_from = 2;
+    string free_to = 3;
+    string user_name = 4;
+    string email = 5;
+    repeated int32 have_tags = 6;
+    repeated int32 want_tags = 7;
+    repeated string blacklist = 9;
+    repeated string languages = 10;
+    double latitude = 11;
+    double longitude = 12;
+    int32 location_type = 13;
+}
+
+// Party is represented as party model MixLunch matching program created
+message Party {
+    string start_from = 1;
+    string end_to = 2;
+    repeated UserModelForMatching members = 3;
+    string chat_room_id = 4;
+    string room_id = 5;
+}
+
+message Empty {
+}

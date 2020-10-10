@@ -1,0 +1,14 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7.22
+    ports:
+      - "3306:3306"
+    command: mysqld --character-set-server=utf8mb4
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
+      - ./db/mysql/conf.d:/etc/mysql/conf.d
+    hostname: db
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
+      - MYSQL_DATABASE=mixlunch

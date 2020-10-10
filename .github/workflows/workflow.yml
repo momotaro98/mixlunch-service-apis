@@ -1,0 +1,191 @@
+name: Workflow
+on: push
+jobs:
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Setup Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13.1
+
+    - name: Setup GOPATH
+      run: |
+        echo "::set-env name=GOPATH::$(go env GOPATH)"
+        echo "::add-path::$(go env GOPATH)/bin"
+      shell: bash
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install test tools
+      run: make setup
+
+    - name: Get dependencies
+      run: make get-dependencies
+
+    - name: Run unit test
+      run: make test
+
+    - name: Run linter
+      run: make lint
+
+  integration:
+    name: Integration test
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Setup for integration test
+      run: sudo npm install -g newman
+
+    - name: Setup Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13.1
+
+    - name: Setup GOPATH
+      # temporary step to run grpcurl command in GOPATH
+      # copied from https://github.com/actions/setup-go/issues/14#issuecomment-563273583
+      run: |
+        echo "::set-env name=GOPATH::$(go env GOPATH)"
+        echo "::add-path::$(go env GOPATH)/bin"
+      shell: bash
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install test tools
+      run: make setup
+
+    - name: Build the docker-compose stack
+      run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d
+
+    - name: Check running containers
+      run: docker ps -a
+
+    - name: Check logs
+      run: docker logs mixlunch-service-api_api-server
+
+    - name: Sleep to wait for preparing of containers
+      run: sleep 15 # 15 seconds sleep
+
+    - name: Run test suite
+      run: make integration-test
+
+    - name: Shutdown docker containers
+      run: docker-compose down
+
+  deploy-api-app:
+    # Ref link: https://dev.classmethod.jp/articles/github-action-ecr-push/
+    name: Deploy REST API app
+    needs: [test,integration]
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ${{ secrets.AWS_ECR_REPO_NAME }}
+      run: |
+        IMAGE_TAG=latest
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+    - name: Render Amazon ECS task definition
+      id: render-container
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: aws/api-server-task-definition.json
+        container-name: mixlunch-service-api
+        image: 402019921506.dkr.ecr.ap-northeast-1.amazonaws.com/mixlunch-service-api:latest
+
+    - name: Deploy to Amazon ECS service
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.render-container.outputs.task-definition }}
+        service: mixlunch-service-api
+        cluster: mixlunch-ecs-cluster
+
+  deploy-grpc-app:
+    # Ref link: https://dev.classmethod.jp/articles/github-action-ecr-push/
+    name: Deploy gRPC server app
+    needs: [test,integration]
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.AWS_ECR_GRPC_REPO_NAME }}
+        run: |
+          IMAGE_TAG=latest
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Render Amazon ECS task definition
+        id: render-container
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: aws/grpc-server-task-definition.json
+          container-name: mixlunch-service-api-grpc-server
+          image: 402019921506.dkr.ecr.ap-northeast-1.amazonaws.com/mixlunch-service-api-grpc-server:latest
+
+      - name: Deploy to Amazon ECS service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-container.outputs.task-definition }}
+          service: mixlunch-service-api-grpc-server
+          cluster: mixlunch-ecs-cluster
+
+  notify-deploy:
+    name: Notify deployment
+    needs: [deploy-api-app,deploy-grpc-app]
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout code
+      # Checkout is needed to get secrets
+      uses: actions/checkout@v2
+
+    - name: Notify to Slack
+      env:
+        SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      run: |
+        echo "Notifying to Slack"
+        bash <(curl -Ls https://gist.githubusercontent.com/momotaro98/96aa94b67d487942d05268b8c6a1d6cc/raw/mixlunch_common_deploy_slack_notify.sh)
+        echo "Notifying to Slack Done!"

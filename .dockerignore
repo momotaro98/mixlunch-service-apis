@@ -1,0 +1,13 @@
+# Common
+.git
+.gitignore
+Makefile
+
+# Go
+build
+vendor
+
+# Project
+db
+integration-test
+deploy.sh

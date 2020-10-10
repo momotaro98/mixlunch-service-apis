@@ -1,0 +1,27 @@
+BEGIN;
+
+CREATE TABLE IF NOT EXISTS userschedules (
+    id MEDIUMINT NOT NULL AUTO_INCREMENT,
+    userId CHAR(50) NOT NULL,
+    fromDateTime DATETIME NOT NULL,
+    toDateTime DATETIME NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS parties (
+    id MEDIUMINT NOT NULL AUTO_INCREMENT,
+    startFrom DATETIME NOT NULL,
+    endTo DATETIME NOT NULL,
+    chatRoomId CHAR(50),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS partymembers (
+    id MEDIUMINT NOT NULL AUTO_INCREMENT,
+    partyId MEDIUMINT NOT NULL,
+    userId CHAR(50) NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY(partyId) REFERENCES parties(id)
+);
+
+COMMIT;

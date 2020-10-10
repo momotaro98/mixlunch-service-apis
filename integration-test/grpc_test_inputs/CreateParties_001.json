@@ -1,0 +1,22 @@
+{
+  "start_from": "2018-11-02T12:00:00Z",
+  "end_to": "2018-11-02T13:00:00Z",
+  "members": [
+    {
+      "user_id": "xDlXdTXw5eV7jC7ETxX59gUk71J2",
+      "free_from": "2018-11-02T12:00:00Z",
+      "free_to": "2018-11-02T13:00:00Z"
+    },
+    {
+      "user_id": "tVI1i49UBFPvnse9NuRR8m4X6342",
+      "free_from": "2018-11-02T12:00:00Z",
+      "free_to": "2018-11-02T13:00:00Z"
+    },
+    {
+      "user_id": "plpC2nFJ5ifFN5WaFsjhIce1KFy2",
+      "free_from": "2018-11-02T12:00:00Z",
+      "free_to": "2018-11-02T13:00:00Z"
+    }
+  ],
+  "room_id": "service-api-integration-test"
+}
